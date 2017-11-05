@@ -142,3 +142,7 @@ render(<App />, document.getElementById('root'));
 2. 渲染子节点成本昂贵
 
 需要承认的一点是，我所建议的抽离子组件的方式需要额外的工作。需要更多的组合，更多的代码。所以如果你没有性能的上的问题，可以说是过早的性能优化。
+
+## 原文链接
+
+[React Pattern: Extract Child Components to Avoid Binding](https://medium.freecodecamp.org/react-pattern-extract-child-components-to-avoid-binding-e3ad8310725e)
