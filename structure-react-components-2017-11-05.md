@@ -101,3 +101,18 @@ const ExpenseDetails = ({ expense, dateFormat, withCurrency, currencyFormat, isO
 随着组件属性的增长，我们可以决定是否把组件分割成更容易定义的组件，就像`OverdueExpenseDetails, PaidExpenseDetails` 等等。
 
 ## 仅传递需要的属性
+
+为了减少组件和费用对象的关联，我们可以仅传递需要的属性。
+
+```
+const ExpenseDetails = ({ category, description, amount, date }) => (
+  <div className='expense-details'>
+     <div>Category: <span>{category}</span></div>
+     <div>Description: <span>{description}</span></div>
+     <div>Amount: <span>{amount}</span></div>
+     <div>Date: <span>{date}</span></div>
+  </div>
+)
+```
+
+我们分别传递每个属性，所以我们将责任转移到使用组件的人身上。如果费用对象的内部结构改变乐的话，它并不影响花费明细格式化组件本身，但是或许会影响到所有用到这个组件的地方，因为传递的属性必须进行修改。当作为单独的属性进行传递时，组件将会更加的**抽象**。
