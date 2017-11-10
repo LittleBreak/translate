@@ -77,4 +77,27 @@ const ExpenseDetails = ({ expense }) => (
 
 传递费用对象到花费明细组件中感觉十分合适。花费明细的格式化是高内聚的，它展示乐费用的数据。无论是么时候我们想修改展示的格式，只需要在一个地方做出修改。同时改变费用明细格式化不引入任何副作用到消费对象本身。
 
-组件紧密的和费用对象绑定在一起，这样会有什么问题吗。当然没有，但是我们必须意识到这回如何影响到我们的系统。
+组件紧密的和费用对象绑定在一起，这样会有什么问题吗。当然没有，但是我们必须意识到这会如何影响到我们的系统。把费用对象作为属性传递，结果导致花费明细组件依赖以费用对象的内部结构。只要我们修改乐费用对象的内部结构，我们就需要修改组件。当然，我们只需要需要一个地方。
+
+这种设计会如果影响将来的改变和拓展呢？如果我们像添加，修改或者移除一个字段,我们只需要修改一个组件。如果我们想添加一个不同的日期的格式化呢，我们就需要为了日期的格式化添加另一个属性。
+```
+const ExpenseDetails = ({ expense, dateFormat }) => (
+  <div className='expense-details'>
+     <div>Category: <span>{expense.category}</span></div>
+     <div>Description: <span>{expense.description}</span></div>
+     <div>Amount: <span>{expense.amount}</span></div>
+     <div>Date: <span>{expense.doneAt.format(dateFormat)}</span></div>
+  </div>
+)
+```
+
+我们通过添加额外的属性使组件更加灵活。只要这里只有少许的选择，一切ok。在系统不断增长，为了不同的应用场景下我们需要很多的属性来进行控制。
+```
+const ExpenseDetails = ({ expense, dateFormat, withCurrency, currencyFormat, isOverdue, isPaid ... })
+```
+
+添加属性使组件变得更加的复用，但是这同样是一个信号，这个组件在完成各种不同的职责。这种规律同样适用于函数。我们可以创建一个接受很多参数的函数，但是只要参数的数量超出3-4个，这个函数就开始负责很多的事情。也许是时候把函数分离成更小的函数。
+
+随着组件属性的增长，我们可以决定是否把组件分割成更容易定义的组件，就像`OverdueExpenseDetails, PaidExpenseDetails` 等等。
+
+## 仅传递需要的属性
