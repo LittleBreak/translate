@@ -33,3 +33,48 @@ type Expense {
 *  传递属性的数组
 *  传递格式作为children
 
+我们来讨论上面的每一项运用过程中的优缺点。**牢记没有最好的只有最适合的，所有模式都依赖与系统。**
+
+## 无属性控制
+
+最简单的解决方式并且这种方式通常为最开始的时候来构建一个组件用硬编码的数据。
+
+```
+const ExpenseDetails = () => (
+  <div className='expense-details'>
+     <div>Category: <span>Food</span></div>
+     <div>Description: <span>Lunch</span></div>
+     <div>Amount: <span>10.15</span></div>
+     <div>Date: <span>2017-10-12</span></div>
+  </div>
+)
+```
+
+不传递任何属性，当然组件将只适用于一个场景切没有给我们提供任何灵活性。当然，在这个花费明细的组件中我们为你可以看到在最开始的时候组件需要接受哪一些参数。然而，有些场景下不接受属性是一个好的解决方式。首先，我们可以使用像logo,公司信息，徽章这些不接收属性的静态组件。
+
+```
+const Logo = () => (
+  <div className='logo'>
+   <img src='/logo.png' alt='DayOne logo'/>
+  </div>
+)
+```
+
+
+## 传递费用的对象
+
+在花费明细明确的情况下，我们需要传递数据到组件中去。首先我们先来看看传递费用对象的情况。
+```
+const ExpenseDetails = ({ expense }) => (
+  <div className='expense-details'>
+     <div>Category: <span>{expense.category}</span></div>
+     <div>Description: <span>{expense.description}</span></div>
+     <div>Amount: <span>{expense.amount}</span></div>
+     <div>Date: <span>{expense.doneAt}</span></div>
+  </div>
+)
+```
+
+传递费用对象到花费明细组件中感觉十分合适。花费明细的格式化是高内聚的，它展示乐费用的数据。无论是么时候我们想修改展示的格式，只需要在一个地方做出修改。同时改变费用明细格式化不引入任何副作用到消费对象本身。
+
+组件紧密的和费用对象绑定在一起，这样会有什么问题吗。当然没有，但是我们必须意识到这回如何影响到我们的系统。
