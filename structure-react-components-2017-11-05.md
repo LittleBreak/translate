@@ -116,3 +116,81 @@ const ExpenseDetails = ({ category, description, amount, date }) => (
 ```
 
 我们分别传递每个属性，所以我们将责任转移到使用组件的人身上。如果费用对象的内部结构改变乐的话，它并不影响花费明细格式化组件本身，但是或许会影响到所有用到这个组件的地方，因为传递的属性必须进行修改。当作为单独的属性进行传递时，组件将会更加的**抽象**。
+
+分离传递属性又会怎么影响未来额设计呢？添加/更新/删除一些属性变得不是很容易。当我们想添加一个字段时，我们不仅需要修改花费明细组件的内部实现还需要修改每一个用到组件的地方。
+
+```
+const ExpenseDetails = ({ category, description, amount, date, account, comment, case ... }) => ( ... )
+```
+另一方面，支持多种日期的格式化几乎是在组件外完成的，既然我们可以把日期作为属性传递进来，我们同样可以传递格式化后的日期。
+
+```
+<ExpenseDetails 
+  category={expense.category} 
+  description={expense.description}
+  amount={expense.amount}
+  date={expense.doneAt.format('YYYY-MM-DD')}
+/>
+```
+决定如何展示特定的字段掌握在使用组件的人手中。这不再是花费明细组件实现的情况。
+
+## 传递属性的数组或映射
+
+组件将会变得更加抽象化，我们可以传递属性的映射。
+```
+const ExpenseDetails = ({ expense }) => (
+  <div class='expense-details'>
+  {
+    _.reduce(expense, (acc, value, key) => {
+      acc.push(<div>{key}<span>{value}</span></div>)
+    }, [])
+  }
+  </div>
+)
+```
+使用组件的人将控制花费明细组件的格式。传递到组件中的对象必须进行适当的格式化。
+```
+const expense = {
+  "Category": "Food",
+  "Description": "Lunch",
+  "Amount": 10.15,
+  "Date": 2017-10-12
+}
+```
+这种解决方式存在很多问题。我们稍微控制了组件会如何展示。`reduce` 的规则并没有被详细说明，所以我们需要添加一些规则。我们可以传递一个有相关对象的数组替换掉映射，来克服这种问题，但是还是存在一些缺点。
+
+传递映射或数组作为属性和花费对象没有关联在一起，同时也完全没有内聚相关。添加或删除属性将只涉及到修改属性，但是在组件本身将失去对格式化的控制。如果我们想修改类别的格式化，在这个方案中时不能解决的。（*精确的说，总有办法去改变一些东西，比如传递另一个携带这格式化配置信息的属性，当然这种解决方案不再清晰和直观。* ）
+
+## 把格式化数据作为child传递
+
+```
+const ExpenseDetails = ({ children }) => (
+  <div class='expense-details'>
+    { children }
+  </div>
+)
+```
+在这种情况下，花费明细组件仅仅只是提供结构和样式的容器。使用组件去展示详情必须提供所有的数据。
+```
+
+<ExpenseDetails>
+  <div>Category: <span>{expense.category}</span></div>
+  <div>Description: <span>{expense.description}</span></div>
+  <div>Amount: <span>{expense.amount}</span></div>
+  <div>Date: <span>{expense.doneAt}</span></div>
+</ExpenseDetails>
+```
+
+既然我们需要做很多重复性的工作，或许这种解决方式对花费明细组件来说不是一种好的解决方案。但仍然有很大的灵活性并且有了很多不同的格式化展示的可能性。添加，删除，更新字段只涉及到使用组件的更改。日期格式化同样如此。我们失去了内聚，但是这个代价是我们必须要付出的。
+
+## 应用场景才是王道
+
+正如你所看到的，我们在交换不同的长处和可能性。哪一种时最好的呢？这取决于
+
+* 项目本身
+* 项目的阶段
+* 组件——我们是想要更明确的组件
+* 个人偏好
+* 需求——组件是修改的更频繁好事使用的更频繁
+
+**这里没有唯一的最好的解决方案，一种方式不会适合所有的应用场景.** 我们如何构建组件将会极大的影响我们如何维护和扩展系统。所有的一切都取决于应用场景。值得庆幸的时有很多解决方式供我们选择。组件化是一种很好的抽象去构建或大或小的系统。这只是选择正确解决方案的一个例子。
