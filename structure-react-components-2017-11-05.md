@@ -194,3 +194,7 @@ const ExpenseDetails = ({ children }) => (
 * 需求——组件是修改的更频繁好事使用的更频繁
 
 **这里没有唯一的最好的解决方案，一种方式不会适合所有的应用场景.** 我们如何构建组件将会极大的影响我们如何维护和扩展系统。所有的一切都取决于应用场景。值得庆幸的时有很多解决方式供我们选择。组件化是一种很好的抽象去构建或大或小的系统。这只是选择正确解决方案的一个例子。
+
+## 原文链接
+
+>[How to structure components in React?](https://reallifeprogramming.com/how-to-structure-components-in-react-54fc43e71546)
